@@ -2,10 +2,659 @@
   "name": "LanternKeep",
   "tree": {
     "$className": "DataModel",
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "Ambient": [0.1058823529, 0.1137254902, 0.1254901961],
+        "Brightness": 2.25,
+        "ClockTime": 17.35,
+        "EnvironmentDiffuseScale": 0.45,
+        "EnvironmentSpecularScale": 0.2,
+        "FogColor": [0.6431372549, 0.6, 0.5450980392],
+        "FogEnd": 420,
+        "OutdoorAmbient": [0.3725490196, 0.3568627451, 0.3294117647],
+        "Technology": "Future"
+      },
+      "Atmosphere": {
+        "$className": "Atmosphere",
+        "$properties": {
+          "Color": [0.6941176471, 0.6431372549, 0.5764705882],
+          "Decay": [0.3450980392, 0.3176470588, 0.2941176471],
+          "Density": 0.28,
+          "Glare": 0.08,
+          "Haze": 1.4
+        }
+      }
+    },
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
       "Shared": {
         "$path": "src/shared"
+      }
+    },
+    "Workspace": {
+      "$className": "Workspace",
+      "StaticWorld": {
+        "$className": "Folder",
+        "OutlandsFloor": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "CanCollide": true,
+            "Material": "Mud",
+            "Color": [0.2470588235, 0.2666666667, 0.2196078431],
+            "Size": [300, 6, 300],
+            "Position": [0, -4, 0],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "NorthRidge": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Rock",
+            "Color": [0.3725490196, 0.3333333333, 0.2862745098],
+            "Size": [120, 24, 24],
+            "Position": [0, 8, -108],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "SouthRidge": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Rock",
+            "Color": [0.3725490196, 0.3333333333, 0.2862745098],
+            "Size": [120, 22, 24],
+            "Position": [0, 7, 108],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "EastRidge": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Rock",
+            "Color": [0.3568627451, 0.3215686275, 0.2784313725],
+            "Size": [24, 20, 128],
+            "Position": [108, 6, 0],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "WestRidge": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Rock",
+            "Color": [0.3568627451, 0.3215686275, 0.2784313725],
+            "Size": [24, 18, 128],
+            "Position": [-108, 5, 0],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "NorthPath": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Slate",
+            "Color": [0.4823529412, 0.4274509804, 0.3333333333],
+            "Size": [14, 0.4, 40],
+            "Position": [0, 0.2, -30],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "SouthPath": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Slate",
+            "Color": [0.4823529412, 0.4274509804, 0.3333333333],
+            "Size": [14, 0.4, 40],
+            "Position": [0, 0.2, 30],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "EastPath": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Slate",
+            "Color": [0.4823529412, 0.4274509804, 0.3333333333],
+            "Size": [40, 0.4, 14],
+            "Position": [30, 0.2, 0],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "WestPath": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Slate",
+            "Color": [0.4823529412, 0.4274509804, 0.3333333333],
+            "Size": [40, 0.4, 14],
+            "Position": [-30, 0.2, 0],
+            "TopSurface": "Smooth",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "LanternDaisRing": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Slate",
+            "Color": [0.4392156863, 0.3843137255, 0.3019607843],
+            "Shape": "Cylinder",
+            "Size": [2, 22, 22],
+            "Position": [0, 0.15, 0],
+            "CFrame": [
+              0,
+              0.15,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        "CampfireCircle": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Slate",
+            "Color": [0.4274509804, 0.3647058824, 0.2862745098],
+            "Shape": "Cylinder",
+            "Size": [1, 12, 12],
+            "Position": [0, 0.1, 7],
+            "CFrame": [
+              0,
+              0.1,
+              7,
+              1,
+              0,
+              0,
+              0,
+              0,
+              -1,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        "NorthGate": {
+          "$className": "Model",
+          "LeftPillar": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5019607843, 0.4470588235, 0.3803921569],
+              "Size": [4, 14, 4],
+              "Position": [-8, 6, -54]
+            }
+          },
+          "RightPillar": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5019607843, 0.4470588235, 0.3803921569],
+              "Size": [4, 14, 4],
+              "Position": [8, 6, -54]
+            }
+          },
+          "Lintel": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5529411765, 0.4901960784, 0.4156862745],
+              "Size": [20, 3, 4],
+              "Position": [0, 12.5, -54]
+            }
+          }
+        },
+        "SouthGate": {
+          "$className": "Model",
+          "LeftPillar": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5019607843, 0.4470588235, 0.3803921569],
+              "Size": [4, 14, 4],
+              "Position": [-8, 6, 54]
+            }
+          },
+          "RightPillar": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5019607843, 0.4470588235, 0.3803921569],
+              "Size": [4, 14, 4],
+              "Position": [8, 6, 54]
+            }
+          },
+          "Lintel": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5529411765, 0.4901960784, 0.4156862745],
+              "Size": [20, 3, 4],
+              "Position": [0, 12.5, 54]
+            }
+          }
+        },
+        "EastGate": {
+          "$className": "Model",
+          "LowerPillar": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5019607843, 0.4470588235, 0.3803921569],
+              "Size": [4, 14, 4],
+              "Position": [54, 6, -8]
+            }
+          },
+          "UpperPillar": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5019607843, 0.4470588235, 0.3803921569],
+              "Size": [4, 14, 4],
+              "Position": [54, 6, 8]
+            }
+          },
+          "Lintel": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5529411765, 0.4901960784, 0.4156862745],
+              "Size": [4, 3, 20],
+              "Position": [54, 12.5, 0]
+            }
+          }
+        },
+        "WestGate": {
+          "$className": "Model",
+          "LowerPillar": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5019607843, 0.4470588235, 0.3803921569],
+              "Size": [4, 14, 4],
+              "Position": [-54, 6, -8]
+            }
+          },
+          "UpperPillar": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5019607843, 0.4470588235, 0.3803921569],
+              "Size": [4, 14, 4],
+              "Position": [-54, 6, 8]
+            }
+          },
+          "Lintel": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Rock",
+              "Color": [0.5529411765, 0.4901960784, 0.4156862745],
+              "Size": [4, 3, 20],
+              "Position": [-54, 12.5, 0]
+            }
+          }
+        },
+        "NorthBrazier": {
+          "$className": "Model",
+          "Bowl": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Metal",
+              "Color": [0.2745098039, 0.2862745098, 0.3137254902],
+              "Shape": "Cylinder",
+              "Size": [2.4, 4, 4],
+              "Position": [0, 1.2, -17],
+              "CFrame": [
+                0,
+                1.2,
+                -17,
+                1,
+                0,
+                0,
+                0,
+                0,
+                -1,
+                0,
+                1,
+                0
+              ]
+            }
+          },
+          "Flame": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Material": "Neon",
+              "Color": [1, 0.7019607843, 0.3568627451],
+              "Shape": "Ball",
+              "Size": [2.2, 2.2, 2.2],
+              "Position": [0, 4.2, -17]
+            },
+            "Light": {
+              "$className": "PointLight",
+              "$properties": {
+                "Brightness": 1.8,
+                "Color": [1, 0.7803921569, 0.4745098039],
+                "Range": 18
+              }
+            }
+          }
+        },
+        "SouthBrazier": {
+          "$className": "Model",
+          "Bowl": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Metal",
+              "Color": [0.2745098039, 0.2862745098, 0.3137254902],
+              "Shape": "Cylinder",
+              "Size": [2.4, 4, 4],
+              "Position": [0, 1.2, 17],
+              "CFrame": [
+                0,
+                1.2,
+                17,
+                1,
+                0,
+                0,
+                0,
+                0,
+                -1,
+                0,
+                1,
+                0
+              ]
+            }
+          },
+          "Flame": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Material": "Neon",
+              "Color": [1, 0.7019607843, 0.3568627451],
+              "Shape": "Ball",
+              "Size": [2.2, 2.2, 2.2],
+              "Position": [0, 4.2, 17]
+            },
+            "Light": {
+              "$className": "PointLight",
+              "$properties": {
+                "Brightness": 1.8,
+                "Color": [1, 0.7803921569, 0.4745098039],
+                "Range": 18
+              }
+            }
+          }
+        },
+        "EastBrazier": {
+          "$className": "Model",
+          "Bowl": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Metal",
+              "Color": [0.2745098039, 0.2862745098, 0.3137254902],
+              "Shape": "Cylinder",
+              "Size": [2.4, 4, 4],
+              "Position": [17, 1.2, 0],
+              "CFrame": [
+                17,
+                1.2,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                -1,
+                0,
+                1,
+                0
+              ]
+            }
+          },
+          "Flame": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Material": "Neon",
+              "Color": [1, 0.7019607843, 0.3568627451],
+              "Shape": "Ball",
+              "Size": [2.2, 2.2, 2.2],
+              "Position": [17, 4.2, 0]
+            },
+            "Light": {
+              "$className": "PointLight",
+              "$properties": {
+                "Brightness": 1.8,
+                "Color": [1, 0.7803921569, 0.4745098039],
+                "Range": 18
+              }
+            }
+          }
+        },
+        "WestBrazier": {
+          "$className": "Model",
+          "Bowl": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Metal",
+              "Color": [0.2745098039, 0.2862745098, 0.3137254902],
+              "Shape": "Cylinder",
+              "Size": [2.4, 4, 4],
+              "Position": [-17, 1.2, 0],
+              "CFrame": [
+                -17,
+                1.2,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                -1,
+                0,
+                1,
+                0
+              ]
+            }
+          },
+          "Flame": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Material": "Neon",
+              "Color": [1, 0.7019607843, 0.3568627451],
+              "Shape": "Ball",
+              "Size": [2.2, 2.2, 2.2],
+              "Position": [-17, 4.2, 0]
+            },
+            "Light": {
+              "$className": "PointLight",
+              "$properties": {
+                "Brightness": 1.8,
+                "Color": [1, 0.7803921569, 0.4745098039],
+                "Range": 18
+              }
+            }
+          }
+        },
+        "NorthwestTree": {
+          "$className": "Model",
+          "Trunk": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Wood",
+              "Color": [0.3568627451, 0.2392156863, 0.1450980392],
+              "Size": [3, 12, 3],
+              "Position": [-68, 5.5, -62]
+            }
+          },
+          "Canopy": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Grass",
+              "Color": [0.2666666667, 0.4117647059, 0.2509803922],
+              "Shape": "Ball",
+              "Size": [14, 12, 14],
+              "Position": [-68, 16, -62]
+            }
+          }
+        },
+        "NortheastTree": {
+          "$className": "Model",
+          "Trunk": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Wood",
+              "Color": [0.3568627451, 0.2392156863, 0.1450980392],
+              "Size": [3, 10, 3],
+              "Position": [68, 4.5, -64]
+            }
+          },
+          "Canopy": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Grass",
+              "Color": [0.2392156863, 0.3882352941, 0.231372549],
+              "Shape": "Ball",
+              "Size": [13, 11, 13],
+              "Position": [68, 14, -64]
+            }
+          }
+        },
+        "SouthwestTree": {
+          "$className": "Model",
+          "Trunk": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Wood",
+              "Color": [0.3568627451, 0.2392156863, 0.1450980392],
+              "Size": [3, 11, 3],
+              "Position": [-66, 5, 68]
+            }
+          },
+          "Canopy": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Grass",
+              "Color": [0.2549019608, 0.4039215686, 0.2431372549],
+              "Shape": "Ball",
+              "Size": [14, 12, 14],
+              "Position": [-66, 15.5, 68]
+            }
+          }
+        },
+        "SoutheastTree": {
+          "$className": "Model",
+          "Trunk": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Wood",
+              "Color": [0.3568627451, 0.2392156863, 0.1450980392],
+              "Size": [3, 12, 3],
+              "Position": [66, 5.5, 66]
+            }
+          },
+          "Canopy": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Material": "Grass",
+              "Color": [0.2509803922, 0.3921568627, 0.2352941176],
+              "Shape": "Ball",
+              "Size": [15, 12, 15],
+              "Position": [66, 16.5, 66]
+            }
+          }
+        },
+        "NorthwestStone": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Rock",
+            "Color": [0.4470588235, 0.4156862745, 0.3803921569],
+            "Size": [14, 8, 10],
+            "Position": [-40, 3, -44]
+          }
+        },
+        "NortheastStone": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Rock",
+            "Color": [0.4470588235, 0.4156862745, 0.3803921569],
+            "Size": [12, 7, 10],
+            "Position": [42, 2.5, -42]
+          }
+        },
+        "SouthwestStone": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Rock",
+            "Color": [0.4470588235, 0.4156862745, 0.3803921569],
+            "Size": [12, 7, 11],
+            "Position": [-44, 2.5, 40]
+          }
+        },
+        "SoutheastStone": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Material": "Rock",
+            "Color": [0.4470588235, 0.4156862745, 0.3803921569],
+            "Size": [13, 8, 11],
+            "Position": [42, 3, 42]
+          }
+        }
       }
     },
     "ServerStorage": {
