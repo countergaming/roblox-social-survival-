@@ -49,12 +49,33 @@ local function cloneMasteryMap(sourceMap, order)
     return masteryMap
 end
 
-local function buildMasterySnapshots(sourceMap, definitions, order)
+local function buildHonorSnapshot(baseTitle: string, milestone)
+    return table.freeze({
+        level = milestone.level,
+        title = string.format("%s %s", baseTitle, milestone.titleSuffix),
+        bannerTitle = string.format("%s %s", baseTitle, milestone.bannerSuffix),
+    })
+end
+
+local function buildMasterySnapshots(sourceMap, definitions, order, milestones)
     local masterySnapshots = {}
 
     for _, name in ipairs(order) do
         local experience = sourceMap[name] or 0
         local definition = definitions[name]
+        local level = ProgressionMath.getMasteryLevelForExperience(experience)
+        local unlockedHonors = {}
+        local highestHonorTitle = ""
+        local highestBannerTitle = ""
+
+        for _, milestone in ipairs(milestones) do
+            if level >= milestone.level then
+                local honorSnapshot = buildHonorSnapshot(definition.title, milestone)
+                highestHonorTitle = honorSnapshot.title
+                highestBannerTitle = honorSnapshot.bannerTitle
+                table.insert(unlockedHonors, honorSnapshot)
+            end
+        end
 
         table.insert(
             masterySnapshots,
@@ -63,18 +84,69 @@ local function buildMasterySnapshots(sourceMap, definitions, order)
                 title = definition.title,
                 summary = definition.summary,
                 experience = experience,
-                level = ProgressionMath.getMasteryLevelForExperience(experience),
+                level = level,
                 currentLevelExperience = ProgressionMath.getMasteryExperienceIntoCurrentLevel(
                     experience
                 ),
                 nextLevelExperience = ProgressionMath.getMasteryExperienceNeededForNextLevel(
                     experience
                 ),
+                highestHonorTitle = highestHonorTitle,
+                highestBannerTitle = highestBannerTitle,
+                unlockedHonors = table.freeze(unlockedHonors),
             })
         )
     end
 
     return table.freeze(masterySnapshots)
+end
+
+local function getTopMasterySnapshot(masterySnapshots)
+    local bestSnapshot = nil
+
+    for _, masterySnapshot in ipairs(masterySnapshots) do
+        if
+            bestSnapshot == nil
+            or masterySnapshot.level > bestSnapshot.level
+            or (
+                masterySnapshot.level == bestSnapshot.level
+                and masterySnapshot.experience > bestSnapshot.experience
+            )
+        then
+            bestSnapshot = masterySnapshot
+        end
+    end
+
+    return bestSnapshot
+end
+
+local function flattenUnlockedHonors(masterySnapshots)
+    local honorSnapshots = {}
+
+    for _, masterySnapshot in ipairs(masterySnapshots) do
+        for _, honorSnapshot in ipairs(masterySnapshot.unlockedHonors or {}) do
+            table.insert(
+                honorSnapshots,
+                table.freeze({
+                    sourceName = masterySnapshot.name,
+                    sourceTitle = masterySnapshot.title,
+                    level = honorSnapshot.level,
+                    title = honorSnapshot.title,
+                    bannerTitle = honorSnapshot.bannerTitle,
+                })
+            )
+        end
+    end
+
+    table.sort(honorSnapshots, function(left, right)
+        if left.level == right.level then
+            return left.title < right.title
+        end
+
+        return left.level < right.level
+    end)
+
+    return table.freeze(honorSnapshots)
 end
 
 local function buildFrozenProfile(profileData)
@@ -328,6 +400,22 @@ function ProfileSchema.buildPublicState(profile)
         ProgressionMath.getExperienceIntoCurrentLevel(profile.progression.experience)
     local experienceNeeded =
         ProgressionMath.getExperienceNeededForNextLevel(profile.progression.experience)
+    local roleSnapshots = buildMasterySnapshots(
+        profile.mastery.roles,
+        GameConfig.RoleTuning.Roles,
+        GameConfig.RoleTuning.Order,
+        GameConfig.MasteryTuning.RoleHonorMilestones
+    )
+    local riteSnapshots = buildMasterySnapshots(
+        profile.mastery.rites,
+        GameConfig.RiteTuning.Rites,
+        GameConfig.RiteTuning.Order,
+        GameConfig.MasteryTuning.RiteHonorMilestones
+    )
+    local topRoleSnapshot = getTopMasterySnapshot(roleSnapshots)
+    local topRiteSnapshot = getTopMasterySnapshot(riteSnapshots)
+    local unlockedRoleHonors = flattenUnlockedHonors(roleSnapshots)
+    local unlockedRiteHonors = flattenUnlockedHonors(riteSnapshots)
 
     return table.freeze({
         coins = profile.currency.coins,
@@ -339,16 +427,41 @@ function ProfileSchema.buildPublicState(profile)
         currentLevelExperience = currentLevelExperience,
         nextLevelExperience = experienceNeeded,
         mastery = table.freeze({
-            roles = buildMasterySnapshots(
-                profile.mastery.roles,
-                GameConfig.RoleTuning.Roles,
-                GameConfig.RoleTuning.Order
-            ),
-            rites = buildMasterySnapshots(
-                profile.mastery.rites,
-                GameConfig.RiteTuning.Rites,
-                GameConfig.RiteTuning.Order
-            ),
+            roles = roleSnapshots,
+            rites = riteSnapshots,
+        }),
+        honors = table.freeze({
+            activeRoleHonorTitle = if topRoleSnapshot ~= nil
+                then topRoleSnapshot.highestHonorTitle
+                else "",
+            activeRoleBannerTitle = if topRoleSnapshot ~= nil
+                then topRoleSnapshot.highestBannerTitle
+                else "",
+            activeRiteHonorTitle = if topRiteSnapshot ~= nil
+                then topRiteSnapshot.highestHonorTitle
+                else "",
+            activeRiteBannerTitle = if topRiteSnapshot ~= nil
+                then topRiteSnapshot.highestBannerTitle
+                else "",
+            displayTitle = if topRoleSnapshot ~= nil
+                    and topRoleSnapshot.highestHonorTitle ~= ""
+                then topRoleSnapshot.highestHonorTitle
+                elseif
+                    topRiteSnapshot ~= nil
+                    and topRiteSnapshot.highestHonorTitle ~= ""
+                then topRiteSnapshot.highestHonorTitle
+                else "",
+            bannerTitle = if topRoleSnapshot ~= nil
+                    and topRoleSnapshot.highestBannerTitle ~= ""
+                then topRoleSnapshot.highestBannerTitle
+                elseif
+                    topRiteSnapshot ~= nil
+                    and topRiteSnapshot.highestBannerTitle ~= ""
+                then topRiteSnapshot.highestBannerTitle
+                else "",
+            unlockedRoleHonors = unlockedRoleHonors,
+            unlockedRiteHonors = unlockedRiteHonors,
+            totalUnlockedCount = #unlockedRoleHonors + #unlockedRiteHonors,
         }),
     })
 end

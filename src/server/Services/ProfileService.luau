@@ -38,6 +38,52 @@ local function pushProfileState(player: Player, status: string, message: string,
     getRemoteEvent():FireClient(player, buildStatusPayload(status, message, profile))
 end
 
+local function syncHonorAttributes(player: Player, publicProfile)
+    local honors = if publicProfile ~= nil then publicProfile.honors else nil
+
+    player:SetAttribute("HonorDisplayTitle", if honors ~= nil then honors.displayTitle else "")
+    player:SetAttribute("HonorBannerTitle", if honors ~= nil then honors.bannerTitle else "")
+    player:SetAttribute("HonorRoleTitle", if honors ~= nil then honors.activeRoleHonorTitle else "")
+    player:SetAttribute("HonorRiteTitle", if honors ~= nil then honors.activeRiteHonorTitle else "")
+end
+
+local function collectHonorTitles(publicProfile)
+    local titleLookup = {}
+
+    if publicProfile == nil or publicProfile.honors == nil then
+        return titleLookup
+    end
+
+    for _, honorSnapshot in ipairs(publicProfile.honors.unlockedRoleHonors or {}) do
+        titleLookup[honorSnapshot.title] = true
+    end
+
+    for _, honorSnapshot in ipairs(publicProfile.honors.unlockedRiteHonors or {}) do
+        titleLookup[honorSnapshot.title] = true
+    end
+
+    return titleLookup
+end
+
+local function buildRewardMessage(previousPublicProfile, nextPublicProfile): string
+    local previousTitles = collectHonorTitles(previousPublicProfile)
+    local newTitles = {}
+
+    for honorTitle, _ in pairs(collectHonorTitles(nextPublicProfile)) do
+        if previousTitles[honorTitle] ~= true then
+            table.insert(newTitles, honorTitle)
+        end
+    end
+
+    table.sort(newTitles)
+
+    if #newTitles == 0 then
+        return "Rewards applied."
+    end
+
+    return string.format("Rewards applied. New honors: %s.", table.concat(newTitles, ", "))
+end
+
 local function ensureLeaderstats(player: Player)
     local leaderstats = player:FindFirstChild("leaderstats")
 
@@ -118,6 +164,7 @@ function ProfileService.loadProfileAsync(player: Player)
 
     local publicProfile = ProfileSchema.buildPublicState(sessionProfile)
     syncLeaderstats(player, publicProfile)
+    syncHonorAttributes(player, publicProfile)
 
     if loadSucceeded then
         pushProfileState(player, "Ready", "Profile loaded.", publicProfile)
@@ -154,6 +201,7 @@ function ProfileService.saveProfileAsync(player: Player, reason: string?)
 
             local publicProfile = ProfileSchema.buildPublicState(preparedProfile)
             syncLeaderstats(player, publicProfile)
+            syncHonorAttributes(player, publicProfile)
 
             if reason ~= "autosave" and player.Parent ~= nil then
                 pushProfileState(player, "Ready", "Progress saved.", publicProfile)
@@ -172,12 +220,14 @@ function ProfileService.saveProfileAsync(player: Player, reason: string?)
         "Saving failed. Progress may be delayed.",
         ProfileSchema.buildPublicState(existingProfile)
     )
+    syncHonorAttributes(player, ProfileSchema.buildPublicState(existingProfile))
 
     return false
 end
 
 function ProfileService.applyRoundRewards(player: Player, rewards, roundOutcome, masterySummary)
     local currentProfile = getOrCreateSessionProfile(player)
+    local previousPublicProfile = ProfileSchema.buildPublicState(currentProfile)
     local updatedProfile =
         ProfileSchema.applyRoundRewards(currentProfile, rewards, roundOutcome, masterySummary)
 
@@ -185,7 +235,13 @@ function ProfileService.applyRoundRewards(player: Player, rewards, roundOutcome,
 
     local publicProfile = ProfileSchema.buildPublicState(updatedProfile)
     syncLeaderstats(player, publicProfile)
-    pushProfileState(player, "Ready", "Rewards applied.", publicProfile)
+    syncHonorAttributes(player, publicProfile)
+    pushProfileState(
+        player,
+        "Ready",
+        buildRewardMessage(previousPublicProfile, publicProfile),
+        publicProfile
+    )
 
     return updatedProfile
 end

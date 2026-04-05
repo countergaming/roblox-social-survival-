@@ -515,27 +515,26 @@ local function findMasterySnapshot(categoryName: string, masteryName: string)
     return nil
 end
 
-local function getTopMasterySnapshot(categoryName: string)
-    if latestPublicProfile == nil or latestPublicProfile.mastery == nil then
-        return nil
+local function renderHonorSummary(): string
+    if latestPublicProfile == nil or latestPublicProfile.honors == nil then
+        return ""
     end
 
-    local bestSnapshot = nil
+    local honorSegments = {}
 
-    for _, masterySnapshot in ipairs(latestPublicProfile.mastery[categoryName] or {}) do
-        if
-            bestSnapshot == nil
-            or masterySnapshot.level > bestSnapshot.level
-            or (
-                masterySnapshot.level == bestSnapshot.level
-                and masterySnapshot.experience > bestSnapshot.experience
-            )
-        then
-            bestSnapshot = masterySnapshot
-        end
+    if latestPublicProfile.honors.activeRoleHonorTitle ~= "" then
+        table.insert(honorSegments, latestPublicProfile.honors.activeRoleHonorTitle)
     end
 
-    return bestSnapshot
+    if latestPublicProfile.honors.activeRiteHonorTitle ~= "" then
+        table.insert(honorSegments, latestPublicProfile.honors.activeRiteHonorTitle)
+    end
+
+    if #honorSegments == 0 then
+        return ""
+    end
+
+    return table.concat(honorSegments, " | ")
 end
 
 local function renderRole()
@@ -572,6 +571,11 @@ local function renderRole()
             masterySnapshot.currentLevelExperience,
             masterySnapshot.nextLevelExperience
         )
+
+        if masterySnapshot.highestHonorTitle ~= "" then
+            masteryText =
+                string.format("%s | Honor %s", masteryText, masterySnapshot.highestHonorTitle)
+        end
     end
 
     return string.format(
@@ -600,6 +604,11 @@ local function renderRite()
                 masterySnapshot.currentLevelExperience,
                 masterySnapshot.nextLevelExperience
             )
+
+            if masterySnapshot.highestHonorTitle ~= "" then
+                masteryText =
+                    string.format("%s | Honor %s", masteryText, masterySnapshot.highestHonorTitle)
+            end
         end
 
         return string.format(
@@ -1365,18 +1374,9 @@ function HudController.start()
             latestPublicProfile = payload.profile
 
             if payload.profile ~= nil then
-                local topRoleMastery = getTopMasterySnapshot("roles")
-                local topRiteMastery = getTopMasterySnapshot("rites")
-                local masteryText = ""
-
-                if topRoleMastery ~= nil and topRiteMastery ~= nil then
-                    masteryText = string.format(
-                        " | %s Lv %d | %s Lv %d",
-                        topRoleMastery.title,
-                        topRoleMastery.level,
-                        topRiteMastery.title,
-                        topRiteMastery.level
-                    )
+                local masteryText = renderHonorSummary()
+                if masteryText ~= "" then
+                    masteryText = " | " .. masteryText
                 end
 
                 hudRefs.profileLabel.Text = string.format(
@@ -1403,18 +1403,9 @@ function HudController.start()
 
         if payload.profile ~= nil then
             latestPublicProfile = payload.profile
-            local topRoleMastery = getTopMasterySnapshot("roles")
-            local topRiteMastery = getTopMasterySnapshot("rites")
-            local masteryText = ""
-
-            if topRoleMastery ~= nil and topRiteMastery ~= nil then
-                masteryText = string.format(
-                    " | %s Lv %d | %s Lv %d",
-                    topRoleMastery.title,
-                    topRoleMastery.level,
-                    topRiteMastery.title,
-                    topRiteMastery.level
-                )
+            local masteryText = renderHonorSummary()
+            if masteryText ~= "" then
+                masteryText = " | " .. masteryText
             end
 
             hudRefs.profileLabel.Text = string.format(
@@ -1427,6 +1418,10 @@ function HudController.start()
             )
             hudRefs.roleLabel.Text = renderRole()
             hudRefs.riteLabel.Text = renderRite()
+
+            if payload.message ~= "Profile loaded." and payload.message ~= "Progress saved." then
+                hudRefs.detailLabel.Text = payload.message
+            end
             return
         end
 

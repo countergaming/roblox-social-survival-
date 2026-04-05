@@ -391,6 +391,40 @@ local GameConfig = table.freeze({
         RiteBaseExperience = 10,
         RiteAlignedVoteBonus = 6,
         RiteClearBonus = 6,
+        RoleHonorMilestones = table.freeze({
+            table.freeze({
+                level = 2,
+                titleSuffix = "Adept",
+                bannerSuffix = "Pennant",
+            }),
+            table.freeze({
+                level = 4,
+                titleSuffix = "Veteran",
+                bannerSuffix = "Standard",
+            }),
+            table.freeze({
+                level = 6,
+                titleSuffix = "Paragon",
+                bannerSuffix = "Warbanner",
+            }),
+        }),
+        RiteHonorMilestones = table.freeze({
+            table.freeze({
+                level = 2,
+                titleSuffix = "Attuned",
+                bannerSuffix = "Sigil",
+            }),
+            table.freeze({
+                level = 4,
+                titleSuffix = "Bound",
+                bannerSuffix = "Seal",
+            }),
+            table.freeze({
+                level = 6,
+                titleSuffix = "Ascendant",
+                bannerSuffix = "Crest",
+            }),
+        }),
     }),
     RescueTuning = table.freeze({
         PlayerInterceptDistance = 10,
